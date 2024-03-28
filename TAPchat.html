@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>TAP-NAV</title>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+        border: red;
+      }
+
+      h1 {
+        color: whitesmoke;
+        font-family: Segoe UI;
+        font-size: 16px;
+        line-height: 20px;
+        margin: 0;
+        padding: 0 20px;
+      }
+
+      #banner {
+        align-items: center;
+        background-color: red;
+        display: flex;
+        height: 50px;
+      }
+
+      #webchat {
+        height: calc(100% - 50px);
+        overflow: hidden;
+        position: fixed;
+        top: 50px;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <div id="banner">
+        <h1>TAP-NAV</h1>
+      </div>
+      <div id="webchat" role="main"></div>
+    </div>
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+
+    <script>
+      (async function () {
+        const styleOptions = {
+  accent: '#999999',
+  botAvatarBackgroundColor: '#FF0000',
+  botAvatarImage: 'https://static.wixstatic.com/media/d3efd8_772d2122f8e349168f1fa21471df61f1~mv2.png/v1/fill/w_600,h_600,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/Chat%20bot%20icon%2030kb.png',
+  botAvatarInitials: '',
+  userAvatarImage: 'https://toppng.com//public/uploads/preview/roger-berry-avatar-placeholder-11562991561rbrfzlng6h.png'
+};
+        const tokenEndpointURL = new URL("https://default52f67c8406374ebfbefde451ef8bf5.6b.environment.api.powerplatform.com/powervirtualagents/botsbyschema/crec3_copilotTapTest/directline/token?api-version=2022-03-01-preview");
+
+        const locale = document.documentElement.lang || 'en'; 
+
+        const apiVersion = tokenEndpointURL.searchParams.get('api-version');
+
+        const [directLineURL, token] = await Promise.all([
+          fetch(new URL(`/powervirtualagents/regionalchannelsettings?api-version=${apiVersion}`, tokenEndpointURL))
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Failed to retrieve regional channel settings.');
+              }
+
+              return response.json();
+            })
+            .then(({ channelUrlsById: { directline } }) => directline),
+          fetch(tokenEndpointURL)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Failed to retrieve Direct Line token.');
+              }
+
+              return response.json();
+            })
+            .then(({ token }) => token)
+        ]);
+        const directLine = WebChat.createDirectLine({ domain: new URL('v3/directline', directLineURL), token });
+
+        // Sends "startConversation" event when the connection is established.
+
+        const subscription = directLine.connectionStatus$.subscribe({
+          next(value) {
+            if (value === 2) {
+              directLine
+                .postActivity({
+                  localTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                  locale,
+                  name: 'startConversation',
+                  type: 'event'
+                })
+                .subscribe();
+
+              subscription.unsubscribe();
+            }
+          }
+        });
+
+        WebChat.renderWebChat({ directLine, locale, styleOptions }, document.getElementById('webchat'));
+      })();
+    </script>
+  </body>
+</html>
+
