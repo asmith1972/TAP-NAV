@@ -10,25 +10,25 @@
 
       body {
         margin: 0;
-        border: red;
       }
 
       h1 {
         color: whitesmoke;
-        font-family: Segoe UI;
-        font-size: 16px;
-        line-height: 20px;
+        font-family: Arial;
+        font-size: 18px;
+        line-height: 18px;
         margin: 0;
         padding: 0 20px;
       }
 
       #banner {
         align-items: center;
-        background-color: red;
+        background-color: #d74637;
         display: flex;
         height: 50px;
+        justify-content: center;
       }
-
+       
       #webchat {
         height: calc(100% - 50px);
         overflow: hidden;
@@ -41,7 +41,7 @@
   <body>
     <div>
       <div id="banner">
-        <h1>TAP-NAV</h1>
+        <h1>T A P - N A V</h1>
       </div>
       <div id="webchat" role="main"></div>
     </div>
@@ -50,12 +50,14 @@
     <script>
       (async function () {
         const styleOptions = {
-  accent: '#999999',
+  accent: '#d74637',
   botAvatarBackgroundColor: '#FF0000',
-  botAvatarImage: 'https://asmith1972.github.io/TAP-NAV/TAPI.png',
+  backgroundColor: '#F5F5F5',
+  botAvatarImage: ' https://asmith1972.github.io/TAP-NAV/TAPI.png’,
   botAvatarInitials: '',
   userAvatarImage: 'https://toppng.com//public/uploads/preview/roger-berry-avatar-placeholder-11562991561rbrfzlng6h.png'
 };
+
         const tokenEndpointURL = new URL("https://default52f67c8406374ebfbefde451ef8bf5.6b.environment.api.powerplatform.com/powervirtualagents/botsbyschema/crec3_copilotTapTest/directline/token?api-version=2022-03-01-preview");
 
         const locale = document.documentElement.lang || 'en'; 
